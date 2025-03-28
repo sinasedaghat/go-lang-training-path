@@ -30,9 +30,16 @@ func sign() {
 ######################################
 `)
 }
-func calcute(revenue float64, expenses float64, tax_rate float64) (float64, float64, float64) {
-	EBT := revenue - expenses
-	profit := EBT - EBT*(tax_rate/100)
-	ratio := EBT / profit
+
+// func calcute(revenue float64, expenses float64, tax_rate float64) (float64, float64, float64) {
+// 	EBT := revenue - expenses
+// 	profit := EBT - EBT*(tax_rate/100)
+// 	ratio := EBT / profit
+// 	return EBT, profit, ratio
+// }
+func calcute(revenue float64, expenses float64, tax_rate float64) (EBT float64, profit float64, ratio float64) {
+	EBT = revenue - expenses
+	profit = EBT - EBT*(tax_rate/100)
+	ratio = EBT / profit
 	return EBT, profit, ratio
 }
