@@ -12,9 +12,7 @@ func main() {
 	fmt.Scanln(&expenses)
 	fmt.Print("enter Tax Rate: ")
 	fmt.Scanln(&tax_rate)
-	EBT := revenue - expenses
-	profit := EBT - EBT*(tax_rate/100)
-	ratio := EBT / profit
+	EBT, profit, ratio := calcute(revenue, expenses, tax_rate)
 	fmt.Printf("EBT is: %.0f \n", EBT)
 	fmt.Printf("Profit is: %.0f \n", profit)
 	fmt.Printf("Ratio is: %.2f \n", ratio)
@@ -29,5 +27,12 @@ func sign() {
 #####  ###### ###  ##### ### ## ### ##
 ##  ###  #### ####  #### ####  #### ##
 ####  ####### ######  ## ########## ##
-######################################`)
+######################################
+`)
+}
+func calcute(revenue float64, expenses float64, tax_rate float64) (float64, float64, float64) {
+	EBT := revenue - expenses
+	profit := EBT - EBT*(tax_rate/100)
+	ratio := EBT / profit
+	return EBT, profit, ratio
 }
