@@ -7,9 +7,9 @@ import (
 
 func main() {
 	const inflationRate = 3.4
-	var investmentAmount float64 // var investmentAmount float64 = 2000
-	var years float64            // years := 10.0             // var years float64 = 10
-	expectedReturnRate := 5.5    // var expectedReturnRate = 5.5
+	var investmentAmount float64
+	var years float64
+	expectedReturnRate := 5.5
 
 	fmt.Print("Investment Amount: ")
 	fmt.Scan(&investmentAmount)
@@ -23,8 +23,18 @@ func main() {
 	futureValue := investmentAmount * math.Pow(1+(expectedReturnRate/100), years)
 	futureRealValue := futureValue / math.Pow(1+(inflationRate/100), years)
 
-	fmt.Print("Future Value: ")
-	fmt.Println(futureValue)
-	fmt.Print("Future Real Value: ")
-	fmt.Println(futureRealValue)
+	futureValueFormatted := fmt.Sprintf("futureValue from futureValueFormatted variable: %v", futureValue)
+	futureRealValueFormatted := fmt.Sprintf("futureRealValue from futureRealValueFormatted variable %.3f", futureRealValue)
+
+	fmt.Println("Future Value: ", futureValue)
+	fmt.Println("Future Real Value: ", futureRealValue)
+
+	fmt.Println(futureValueFormatted)
+	fmt.Println(futureRealValueFormatted)
+
+	fmt.Printf("from Printf ==> \nFuture Value: %v\nFuture Real Value: %v\n", futureValue, futureRealValue)
+	fmt.Printf("from Printf rounded numbers ==> \nFuture Value: %.1f\nFuture Real Value: %.2f\n", futureValue, futureRealValue)
+	fmt.Printf(`from Printf with "Backtick" ==> 
+	Future Value: %v
+	Future Real Value: %v`, futureValue, futureRealValue)
 }
