@@ -5,35 +5,16 @@ import "fmt"
 func main() {
 	var revenue, expenses, taxRate float64
 
-	// fmt.Print("Revenue: ")
-	// fmt.Scan(&revenue)
 	// getDirectlyValue("Revenue: ", &revenue)
 	revenue = getValue("Revenue from getValue function: ")
-
-	// fmt.Print("Expenses: ")
-	// fmt.Scan(&expenses)
 	getDirectlyValue("Expenses from getDirectlyValue function: ", &expenses)
-
-	// fmt.Print("Tax Rate Percentage: ")
-	// fmt.Scan(&taxRate)
 	getDirectlyValue("Tax Rate Percentage: ", &taxRate)
 
-	// EBT := revenue - expenses
-	// profit := (1 - taxRate/100) * EBT
-	// ratio := EBT / profit
 	EBT, profit, ratio := profitCalculate(revenue, expenses, taxRate)
 
-	// fmt.Print("Earning Before Tax: ")
-	// fmt.Println(EBT)
-	fmt.Println("Earning Before Tax: ", EBT)
-
-	// fmt.Print("Earning After Tax: ")
-	// fmt.Println((profit))
-	fmt.Println("Earning After Tax: ", profit)
-
-	// fmt.Print("Ratio: ")
-	// fmt.Println(ratio)
-	fmt.Println("Ratio: ", ratio)
+	fmt.Printf("Earning Before Tax: %.1f\n", EBT)
+	fmt.Printf("Earning After Tax: %.1f\n", profit)
+	fmt.Printf("Ratio: %.3f\n", ratio)
 }
 
 func profitCalculate(revenue, expenses, taxRate float64) (ebt, profit, ratio float64) {
