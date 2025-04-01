@@ -3,16 +3,19 @@ package main
 import "fmt"
 
 func main() {
+	var counter int
 	var choice int
 	balance := 1000.0
 	fmt.Println("Welcome to Bank 🏦")
 
-	for i := 0; i < 5; i++ {
-		fmt.Println("What do you want to do?")
+	for { // for i := 0; i < 5; i++ { // for range 5 {
+		counter++
+		fmt.Println("\nWhat do you want to do?")
 		fmt.Println("1. 💰 Check balance")
 		fmt.Println("2. 💵 Deposit money")
 		fmt.Println("3. 💸 Withdraw money")
 		fmt.Println("4. 👋 Exit")
+		fmt.Println("5. Print loop counter")
 
 		fmt.Printf("\n❓ Your choice: ")
 		fmt.Scan(&choice)
@@ -47,10 +50,15 @@ func main() {
 		} else if choice == 4 {
 			fmt.Println("Goodby! 👋")
 			break
+		} else if choice == 5 {
+			fmt.Printf("Loop counter: %v\n", counter)
 		} else {
 			fmt.Println("Your choice isn't valid! 😞")
 		}
+
+		fmt.Printf("📈 counter %v\n", counter)
 	}
 
+	fmt.Printf("📉 final counter %v\n", counter)
 	println("🏦 Thanks for choosing our bank.")
 }
