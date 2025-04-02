@@ -10,23 +10,27 @@ func main() {
 	rand.Seed(time.Now().UnixNano())
 	randomValue := rand.Intn(100)
 	fmt.Println("welcome to New World!")
-	input := showMenu()
-	if input == 1 {
-		fmt.Printf("random value is %d\n", randomValue)
-	} else if input == 2 {
-		var temp int
-		fmt.Print("enter number:")
-		fmt.Scan(&temp)
-		randomValue += temp
-		fmt.Printf("random value is %d\n", randomValue)
-	} else if input == 3 {
-		var temp int
-		fmt.Print("enter number:")
-		fmt.Scan(&temp)
-		randomValue -= temp
-		fmt.Printf("random value is %d\n", randomValue)
-	} else {
-		fmt.Println("GoodBye!")
+	for {
+		input := showMenu()
+		switch input {
+		case 1:
+			fmt.Printf("random value is %d\n", randomValue)
+		case 2:
+			var temp int
+			fmt.Print("enter number:")
+			fmt.Scan(&temp)
+			randomValue += temp
+			fmt.Printf("random value is %d\n", randomValue)
+		case 3:
+			var temp int
+			fmt.Print("enter number:")
+			fmt.Scan(&temp)
+			randomValue -= temp
+			fmt.Printf("random value is %d\n", randomValue)
+		default:
+			fmt.Println("GoodBye!")
+			return
+		}
 	}
 }
 
