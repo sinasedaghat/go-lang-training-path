@@ -1,11 +1,27 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+	"os"
+	"strconv"
+)
+
+const balanceFileName = "balance.txt"
 
 func main() {
 	var counter int
 	var choice int
-	balance := 1000.0
+	balance, err := getBalanceFromFile()
+
+	if err != nil {
+		fmt.Println("❌ The bank is out of reach.")
+		fmt.Println("❌", err)
+		return
+		// msg := fmt.Sprintf("❌ The bank is out of reach.\n%v", err)
+		// panic(msg)
+	}
+
 	fmt.Println("Welcome to Bank 🏦")
 
 	for { // for i := 0; i < 5; i++ { // for range 5 {
@@ -33,6 +49,7 @@ func main() {
 			}
 			balance += input
 			fmt.Printf("💰 Your Balance is Update! You have %.2f\n", balance)
+			writeBalanceToFile(balance)
 		} else if choice == 3 {
 			var input float64
 			fmt.Print("💸 Withdrawal amount: ")
@@ -47,6 +64,7 @@ func main() {
 			}
 			balance -= input
 			fmt.Printf("💰 Your Balance is Update! You have %.2f\n", balance)
+			writeBalanceToFile(balance)
 		} else if choice == 4 {
 			fmt.Println("Goodby! 👋")
 			break
@@ -61,4 +79,23 @@ func main() {
 
 	fmt.Printf("📉 final counter %v\n", counter)
 	println("🏦 Thanks for choosing our bank.")
+}
+
+func writeBalanceToFile(balance float64) {
+	os.WriteFile(balanceFileName, []byte(fmt.Sprint(balance)), 0644)
+}
+
+func getBalanceFromFile() (float64, error) {
+	data, err := os.ReadFile(balanceFileName)
+	fmt.Println("🔮 This is ERROR received when i want get balance data from file.", err)
+	if err != nil {
+		return 0, errors.New("your Balance data does not exists")
+	}
+
+	balance, err := strconv.ParseFloat(string(data), 64)
+	fmt.Println("🔮 This is ERROR received when i want convert string from file to floating point number.", err)
+	if err != nil {
+		return 0, errors.New("your Balance isn't valid value")
+	}
+	return balance, nil
 }
