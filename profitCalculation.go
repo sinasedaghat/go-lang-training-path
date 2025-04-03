@@ -1,14 +1,22 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
+
+const fileName = "resultCalculated.txt"
 
 func main() {
-	var revenue, expenses, taxRate float64
+	// var revenue, expenses, taxRate float64
 
 	// getDirectlyValue("Revenue: ", &revenue)
-	revenue = getValue("Revenue from getValue function: ")
-	getDirectlyValue("Expenses from getDirectlyValue function: ", &expenses)
-	getDirectlyValue("Tax Rate Percentage: ", &taxRate)
+	// getDirectlyValue("Expenses from getDirectlyValue function: ", &expenses)
+	// getDirectlyValue("Tax Rate Percentage: ", &taxRate)
+
+	revenue := getValue("Revenue from getValue function: ", "positive")
+	expenses := getValue("Expenses from getDirectlyValue function: ", "positive")
+	taxRate := getValue("Tax Rate Percentage: ", "percentage")
 
 	EBT, profit, ratio := profitCalculate(revenue, expenses, taxRate)
 
@@ -21,17 +29,33 @@ func profitCalculate(revenue, expenses, taxRate float64) (ebt, profit, ratio flo
 	ebt = revenue - expenses
 	profit = (1 - taxRate/100) * ebt
 	ratio = ebt / profit
-
+	writeToFile(ebt, profit, ratio)
 	return
 }
 
-func getValue(title string) (value float64) {
+func getValue(title, valueType string) (value float64) {
 	fmt.Print(title)
 	fmt.Scan(&value)
+
+	switch valueType {
+	case "positive":
+		if value <= 0 {
+			panic("the value must greater than zero")
+		}
+	case "percentage":
+		if value <= 0 || value >= 100 {
+			panic("value is out of range.")
+		}
+	}
 	return value
 }
 
-func getDirectlyValue(title string, variable *float64) {
-	fmt.Print(title)
-	fmt.Scan(variable)
+func writeToFile(ebt, profit, ratio float64) {
+	data := fmt.Sprintf("Earning Before Tax (ebt): %.1f\nEarning After Tax (profit): %.1f\nratio: %.3f", ebt, profit, ratio)
+	os.WriteFile(fileName, []byte(data), 0644)
 }
+
+// func getDirectlyValue(title string, variable *float64) {
+// 	fmt.Print(title)
+// 	fmt.Scan(variable)
+// }
