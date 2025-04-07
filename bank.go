@@ -1,18 +1,19 @@
 package main
 
 import (
-	"errors"
 	"fmt"
-	"os"
-	"strconv"
+
+	"example.com/bank/counter"
+	"example.com/bank/fileInteraction"
 )
 
 const balanceFileName = "balance.txt"
 
 func main() {
-	var counter int
+	fmt.Printf("This Variable is newMainVariable = %v\n This Print from bank.go file (main package.)", newMainVariable)
+
 	var choice int
-	balance, err := getBalanceFromFile()
+	balance, err := fileInteraction.GetNumberFromFile(balanceFileName)
 
 	if err != nil {
 		fmt.Println("❌ The bank is out of reach.")
@@ -25,13 +26,8 @@ func main() {
 	fmt.Println("Welcome to Bank 🏦")
 
 	for { // for i := 0; i < 5; i++ { // for range 5 {
-		counter++
-		fmt.Println("\nWhat do you want to do?")
-		fmt.Println("1. 💰 Check balance")
-		fmt.Println("2. 💵 Deposit money")
-		fmt.Println("3. 💸 Withdraw money")
-		fmt.Println("4. 👋 Exit")
-		fmt.Println("5. Print loop counter")
+		counter.Increase()
+		selectTypeService()
 
 		fmt.Printf("\n❓ Your choice: ")
 		fmt.Scan(&choice)
@@ -49,7 +45,7 @@ func main() {
 			}
 			balance += input
 			fmt.Printf("💰 Your Balance is Update! You have %.2f\n", balance)
-			writeBalanceToFile(balance)
+			fileInteraction.WriteNumberToFile(balanceFileName, balance)
 		} else if choice == 3 {
 			var input float64
 			fmt.Print("💸 Withdrawal amount: ")
@@ -64,38 +60,17 @@ func main() {
 			}
 			balance -= input
 			fmt.Printf("💰 Your Balance is Update! You have %.2f\n", balance)
-			writeBalanceToFile(balance)
+			fileInteraction.WriteNumberToFile(balanceFileName, balance)
 		} else if choice == 4 {
 			fmt.Println("Goodby! 👋")
 			break
 		} else if choice == 5 {
-			fmt.Printf("Loop counter: %v\n", counter)
+			fmt.Printf("Loop counter: %v\n", counter.Counter)
 		} else {
 			fmt.Println("Your choice isn't valid! 😞")
 		}
-
-		fmt.Printf("📈 counter %v\n", counter)
 	}
 
-	fmt.Printf("📉 final counter %v\n", counter)
+	fmt.Printf("📉 final counter %v\n", counter.Counter)
 	println("🏦 Thanks for choosing our bank.")
-}
-
-func writeBalanceToFile(balance float64) {
-	os.WriteFile(balanceFileName, []byte(fmt.Sprint(balance)), 0644)
-}
-
-func getBalanceFromFile() (float64, error) {
-	data, err := os.ReadFile(balanceFileName)
-	fmt.Println("🔮 This is ERROR received when i want get balance data from file.", err)
-	if err != nil {
-		return 0, errors.New("your Balance data does not exists")
-	}
-
-	balance, err := strconv.ParseFloat(string(data), 64)
-	fmt.Println("🔮 This is ERROR received when i want convert string from file to floating point number.", err)
-	if err != nil {
-		return 0, errors.New("your Balance isn't valid value")
-	}
-	return balance, nil
 }
