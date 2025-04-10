@@ -91,7 +91,7 @@ func getCellNumber(round int) (cell int) {
 		if err != nil {
 			message = "The selected value is not valid, only numbers are valid."
 			continue
-		} else if cell > 9 || cell < 0 {
+		} else if cell > 8 || cell < 0 {
 			message = "Your selection is not valid, valid cells are between 0 and 9."
 			continue
 		} else if value := cellValue(cell); value == "X" || value == "O" {
