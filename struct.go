@@ -13,17 +13,17 @@ type user struct {
 }
 
 func (u user) methodOutputData() {
-	fmt.Println("You call method from user struct with methodOutputData() name, Congratulation!")
+	fmt.Println("You call method from user struct with methodOutputData() name, Congratulation!", &u)
 	fmt.Println("First Name ==> ", u.firstName)
 	fmt.Println("Last Name ==> ", u.lastName)
 	fmt.Println("Birth Date ==> ", u.birthDate)
 	fmt.Println("Create Date ==> ", u.createDate)
 }
 
-func (u user) methodGetArgument(prefix string) {
-	fmt.Println("You call method from user struct with methodGetArgument() name, Congratulation!")
+func (u *user) methodGetArgument(prefix string) {
+	fmt.Println("You call method from user struct with methodGetArgument() name, Congratulation!", &u)
 	fmt.Println("Argument from methodGetArgument() method in user struct", prefix)
-	u.firstName = prefix + " " + u.firstName // Not To work
+	u.firstName = prefix + " " + u.firstName
 }
 
 func main() {
@@ -31,13 +31,13 @@ func main() {
 	userLastName := getUserData("please enter your last name: ")
 	userBirthDate := getUserData("please enter your birth date (MM/DD/YYYY): ")
 
-	// var userData user
-	// userData := user{
-	// 	userFirstName,
-	// 	userLastName,
-	// 	userBirthDate,
-	// 	time.Now(),
-	// }
+	// var userData2 user
+	userData2 := user{
+		userFirstName,
+		userLastName,
+		userBirthDate,
+		time.Now(),
+	}
 
 	userData := user{
 		firstName: userFirstName,
@@ -48,15 +48,20 @@ func main() {
 
 	userData.methodGetArgument("MR")
 
-	fmt.Println("userData", userData)
-	// ... do something awesome whit the gathered data!
+	userData.methodOutputData()
 
-	outputUserData(userFirstName, userLastName, userBirthDate)
+	fmt.Println("userData", &userData)
+
+	outputUserData(&userData)
+	outputUserData(&userData2)
 }
 
-func outputUserData(firstName, lastName, birthDate string) {
-	fmt.Println("You call outputUserData() function")
-	fmt.Println(firstName, lastName, birthDate)
+func outputUserData(u *user) {
+	fmt.Println("You call outputUserData() function", &u)
+	fmt.Println("First Name ==> ", (*u).firstName)
+	fmt.Println("Last Name ==> ", u.lastName)
+	fmt.Println("Birth Date ==> ", u.birthDate)
+	fmt.Println("Create Date ==> ", u.createDate)
 }
 
 func getUserData(promptText string) string {
