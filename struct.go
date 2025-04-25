@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"time"
 )
@@ -13,17 +14,34 @@ type user struct {
 }
 
 func (u user) methodOutputData() {
-	fmt.Println("You call method from user struct with methodOutputData() name, Congratulation!", &u)
-	fmt.Println("First Name ==> ", u.firstName)
-	fmt.Println("Last Name ==> ", u.lastName)
-	fmt.Println("Birth Date ==> ", u.birthDate)
-	fmt.Println("Create Date ==> ", u.createDate)
+	// fmt.Println("You call method from user struct with methodOutputData() name", &u)
+	fmt.Println("user struct ==> ", u)
 }
 
 func (u *user) methodGetArgument(prefix string) {
-	fmt.Println("You call method from user struct with methodGetArgument() name, Congratulation!", &u)
-	fmt.Println("Argument from methodGetArgument() method in user struct", prefix)
+	// fmt.Println("You call method from user struct with methodGetArgument() name", u) // how to access address of u pointer
+	// fmt.Println("Argument from methodGetArgument() method in user struct", prefix)
 	u.firstName = prefix + " " + u.firstName
+}
+
+func (u *user) methodClearData() {
+	// fmt.Println("You call method from user struct with methodClearData() name", u)
+	u.firstName = ""
+	u.lastName = ""
+	u.birthDate = ""
+}
+
+func newUser(firstName, lastName, birthDate *string) (*user, error) {
+	if *firstName == "" || *lastName == "" || *birthDate == "" {
+		return nil, errors.New("first name, last name and birth day are required")
+	}
+
+	return &user{
+		firstName:  *firstName,
+		lastName:   *lastName,
+		birthDate:  *birthDate,
+		createDate: time.Now(),
+	}, nil
 }
 
 func main() {
@@ -31,43 +49,37 @@ func main() {
 	userLastName := getUserData("please enter your last name: ")
 	userBirthDate := getUserData("please enter your birth date (MM/DD/YYYY): ")
 
-	// var userData2 user
-	userData2 := user{
-		userFirstName,
-		userLastName,
-		userBirthDate,
-		time.Now(),
+	// userData := user{
+	// 	firstName: userFirstName,
+	// 	// lastName:   getUserData("please enter your last name (in struct): "),
+	// 	lastName:   userLastName,
+	// 	birthDate:  userBirthDate,
+	// 	createDate: time.Now(),
+	// }
+	var userData *user
+
+	userData, err := newUser(&userFirstName, &userLastName, &userBirthDate)
+
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
 
-	userData := user{
-		firstName: userFirstName,
-		lastName:  getUserData("please enter your last name (in struct): "),
-	}
+	fmt.Printf("type of userDate %T\n", userData)
+	fmt.Printf("type of FirstName %T\n", &userFirstName)
 
 	userData.methodOutputData()
 
-	userData.methodGetArgument("MR")
+	// userData.methodGetArgument("MR")
+	userData.methodClearData()
 
 	userData.methodOutputData()
-
-	fmt.Println("userData", &userData)
-
-	outputUserData(&userData)
-	outputUserData(&userData2)
-}
-
-func outputUserData(u *user) {
-	fmt.Println("You call outputUserData() function", &u)
-	fmt.Println("First Name ==> ", (*u).firstName)
-	fmt.Println("Last Name ==> ", u.lastName)
-	fmt.Println("Birth Date ==> ", u.birthDate)
-	fmt.Println("Create Date ==> ", u.createDate)
 }
 
 func getUserData(promptText string) string {
 	fmt.Print(promptText)
 	var value string
 
-	fmt.Scan(&value)
+	fmt.Scanln(&value)
 	return value
 }
