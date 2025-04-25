@@ -14,6 +14,13 @@ type User struct {
 	createDate time.Time
 }
 
+type Admin struct {
+	password string
+	email    string
+	Xx       User
+	User
+}
+
 func New(firstName, lastName, birthDate string) (*User, error) {
 	if firstName == "" || lastName == "" || birthDate == "" {
 		return nil, errors.New("first name, last name and birth day are required")
@@ -27,9 +34,28 @@ func New(firstName, lastName, birthDate string) (*User, error) {
 	}, nil
 }
 
+func NewAdmin(password, email string) Admin {
+	return Admin{
+		password: password,
+		email:    email,
+		// Xx: User{
+		User: User{
+			firstName:  "Reza",
+			lastName:   "Motti",
+			birthDate:  "13/2/1372",
+			createDate: time.Now(),
+		},
+	}
+}
+
+func (a Admin) MethodOutputAdminDate() {
+	// fmt.Println("Admin struct ==> ", a.Xx, a.Xx, a.Xx.birthDate, a.email, a.password)
+	fmt.Println("Admin struct ==> ", a.firstName, a.lastName, a.birthDate, a.email, a.password)
+}
+
 func (u User) MethodOutputData() {
 	// fmt.Println("You call method from user struct with methodOutputData() name", &u)
-	fmt.Println("user struct ==> ", u.firstName, u.lastName, u.birthDate)
+	fmt.Println("User struct ==> ", u.firstName, u.lastName, u.birthDate)
 }
 
 func (u *User) MethodGetArgument(prefix string) {

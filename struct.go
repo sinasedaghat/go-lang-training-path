@@ -28,6 +28,9 @@ func main() {
 		return
 	}
 
+	// var adminData user.Admin
+	adminData := user.NewAdmin("test1234", "test@test.test")
+
 	userData.MethodGetArgument("Mr.")
 	userData.MethodOutputData()
 	userData.MethodClearData()
@@ -37,6 +40,11 @@ func main() {
 	// fmt.Printf("first userDate1: %v\ntype of userDate: %T\n", userData1, userData1)
 	// fmt.Printf("second userDate: %v\ntype of userDate: %T\n", userData, userData)
 	// fmt.Printf("type of FirstName %T\n", &userFirstName)
+
+	// adminData.Xx.MethodOutputData()
+	adminData.MethodOutputData()
+	adminData.MethodOutputAdminDate()
+	fmt.Printf("adminData: %v\ntype of adminData: %T\n", adminData, adminData)
 }
 
 func getUserData(promptText string) string {
