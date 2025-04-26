@@ -17,8 +17,14 @@ type User struct {
 type Admin struct {
 	password string
 	email    string
-	Xx       User
+	// Xx       User
 	User
+}
+
+type Str string
+
+func (txt Str) Log(prefix string) {
+	fmt.Println(prefix, txt)
 }
 
 func New(firstName, lastName, birthDate string) (*User, error) {

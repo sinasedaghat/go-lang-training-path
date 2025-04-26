@@ -6,6 +6,9 @@ import (
 )
 
 func main() {
+	var name user.Str = "Seda"
+	name.Log("Sina")
+
 	userFirstName := getUserData("please enter your first name: ")
 	userLastName := getUserData("please enter your last name: ")
 	userBirthDate := getUserData("please enter your birth date (MM/DD/YYYY): ")
