@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 func main() {
-	returnExample()
+	rangeArrayExample()
 	fmt.Println("Last line in main function.")
 }
 
@@ -61,4 +61,33 @@ func returnExample() {
 		}
 	}
 	fmt.Println("End of function.")
+}
+
+func whileTrueExample() {
+	var counter int = 0
+
+	for {
+		fmt.Println("While true loop has condition for return in 100 step", counter)
+		if counter == 100 {
+			return
+		}
+		fmt.Println("last print")
+	}
+}
+
+func rangConstantExample() {
+	var index int = 0
+	for index = range 7 {
+		fmt.Println("use range on constant number", index)
+	}
+
+	fmt.Println("last print ==> ", index) // last index 6
+}
+
+func rangeArrayExample() {
+	arr := []string{"first", "second", "third"}
+
+	for index, value := range arr {
+		fmt.Println("use range on array example (index, value) ==> ", index, value)
+	}
 }
