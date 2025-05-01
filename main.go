@@ -7,7 +7,7 @@ import (
 
 func main() {
 	title, content := getNodeContent()
-	fileManagement.InitSingleton()
+	fileManagement.Init()
 	// fmt.Println("practice-getting-user-input ", title, content)
 	fileManagement.AddNote(title, content)
 }

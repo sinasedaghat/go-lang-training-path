@@ -13,7 +13,7 @@ const fileName = "note.json"
 
 var data []note.Node
 
-func InitSingleton() {
+func Init() {
 	_, err := os.Stat(fileName)
 
 	if os.IsNotExist(err) {
@@ -43,7 +43,6 @@ func readFile() {
 			panic(err)
 		}
 	}
-	// fmt.Println("data readFile ==> ", data)
 }
 
 func writeFile() {
