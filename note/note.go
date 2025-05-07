@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-
 	"os"
 	"strings"
 	"time"
@@ -28,7 +27,7 @@ func New(title, content string) (Note, error) {
 	}, nil
 }
 
-func (note Note) ShowNote() {
+func (note Note) Show() {
 	fmt.Printf("Your note has %v as title and it's content is %v\n", note.Title, note.Content)
 }
 
