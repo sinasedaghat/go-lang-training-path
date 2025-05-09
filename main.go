@@ -2,6 +2,10 @@ package main
 
 import "fmt"
 
+type addInput interface {
+	int | float64 | string
+}
+
 func main() {
 	// person := struct {
 	// 	Age int
@@ -98,6 +102,6 @@ func primevalAdd(a, b any) any {
 
 }
 
-func add[T int | float64 | string](a, b T) T {
+func add[T addInput](a, b T) T {
 	return a + b
 }
