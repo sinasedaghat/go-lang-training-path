@@ -18,6 +18,9 @@ func main() {
 	fifthTask()
 	sixthTask()
 	WorkProducts()
+
+	fmt.Printf("\n\n👇 Solutions from Maximilian 👇\n")
+	solutions()
 }
 
 func firstTask() {
@@ -50,6 +53,9 @@ func fourthTask() {
 	fourthTaskResult[0] = fourthTaskResult[1]
 	fourthTaskResult = append(fourthTaskResult[0:1], fourthTaskResult[2:]...)
 	fmt.Println("New Array form thirdTaskResult contain second and third items from hobbies array", fourthTaskResult, cap(fourthTaskResult))
+
+	thirdTaskResult = thirdTaskResult[1:3]
+	fmt.Println("Us e reassign slice and capacity feature in slice: ", thirdTaskResult)
 }
 
 func fifthTask() {
@@ -71,4 +77,61 @@ func WorkProducts() {
 	products.ListOfProducts()
 	products.AddProduct(products.NewProduct("Headphone", 250.99))
 	products.ListOfProducts()
+}
+
+type Product struct {
+	id    string
+	title string
+	price float64
+}
+
+func solutions() {
+	// 1)
+	Hobbies := [3]string{"Sports", "Cooking", "Reading"}
+	fmt.Println(Hobbies)
+
+	// 2)
+	fmt.Println(Hobbies[0])
+	fmt.Println(Hobbies[1:3])
+	fmt.Println(Hobbies[1:])
+
+	// 3)
+	MainHobbies := Hobbies[:2] // Hobbies[0;2]
+	fmt.Println(MainHobbies)
+
+	// 4)
+	MainHobbies = MainHobbies[1:3]
+	fmt.Println(MainHobbies)
+
+	// 5)
+	courseGoals := []string{"Learn Go!", "Learn all the basics"}
+	fmt.Println(courseGoals)
+
+	// 6)
+	courseGoals[1] = "Learn all the details!"
+	courseGoals = append(courseGoals, "Learn all the basics!")
+	fmt.Println(courseGoals)
+
+	// 7)
+	Products := []Product{
+		{
+			"first",
+			"first title",
+			12.99,
+		},
+		{
+			"second",
+			"second title",
+			15.99,
+		},
+	}
+	fmt.Println(Products)
+
+	newProduct := Product{
+		"third",
+		"third title",
+		16.99,
+	}
+	Products = append(Products, newProduct)
+	fmt.Println(Products)
 }
