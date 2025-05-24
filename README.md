@@ -1,5 +1,5 @@
 this is GoLang Training Path\
-In Maximilian's course, parts 108 to 114\
+In Maximilian's course, parts 108 to 114 and 117\
 https://www.udemy.com/course/go-the-complete-guide/
 ### Declaration and Initialization
 - 1
