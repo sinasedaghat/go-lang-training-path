@@ -26,7 +26,7 @@ func main() {
 	fmt.Println("plusFourArray ==>", plusFourArray)
 	fmt.Println("normalNumbers ==>", normalNumbers)
 
-	// use closer concept
+	// use closure concept
 	double := transformCreator(2)
 	triple := transformCreator(3)
 
@@ -45,9 +45,16 @@ func main() {
 	totalSum := aggregate(1, 2, 3, 4, 5)
 	fmt.Println("totalSum ==>", totalSum)
 
-	//
 	totalNormalNumbers := aggregate(normalNumbers...)
 	fmt.Println("totalNormalNumbers ==>", totalNormalNumbers)
+
+	// private variables
+	increase := counter()
+	increase() // Count: 1
+	increase() // Count: 2
+
+	// defer feature
+	useDefer() // First Third Second
 }
 
 // func transformNumber(numbers *[]int, function func(int) int) []int {
@@ -100,4 +107,21 @@ func aggregate(numbers ...int) (sum int) {
 		sum += number
 	}
 	return
+}
+
+// create private variable with closure
+func counter() func() {
+	count := 0
+
+	return func() {
+		count++
+		fmt.Println("Count:", count)
+	}
+}
+
+// defer function
+func useDefer() {
+	fmt.Println("First")
+	defer fmt.Println("Second")
+	fmt.Println("Third")
 }
