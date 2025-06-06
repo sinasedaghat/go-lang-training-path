@@ -9,11 +9,10 @@ import (
 func main() {
 	tMap.Print()
 
-	x, e := tStruct.NewWebsite("newApp.booking.ir", "")
-	if e == nil {
-
-		fmt.Println(x)
+	website, err := tStruct.NewWebsite("newApp.booking.ir", tStruct.WithName("booking"), tStruct.WithTitle("new app of booking.ir"), tStruct.WithDescription(""))
+	if err == nil {
+		fmt.Println(website)
 	} else {
-		fmt.Println(e)
+		fmt.Println(err)
 	}
 }

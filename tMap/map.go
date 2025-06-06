@@ -9,7 +9,7 @@ import (
 var websiteList = make(map[string]tStruct.Website, 0)
 
 func AddNewWebsite(address, name, title, description string, rate int) {
-	website, _ := tStruct.NewWebsite(address, name)
+	website, _ := tStruct.NewWebsite(address)
 	if title != "" {
 		website.Title = title
 	}
@@ -29,5 +29,3 @@ func Print() {
 	fmt.Println("YOYO")
 	// tStruct.NewWebsite()
 }
-
-// Address, Name, Title, Description, Rate
