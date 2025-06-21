@@ -1,11 +1,10 @@
+// https://www.codewars.com/kata/5264d2b162488dc400000001/go
 package stringsSeries
 
 import (
 	"fmt"
 	"strings"
 )
-
-// https://www.codewars.com/kata/5264d2b162488dc400000001/go
 
 func SpinWords(str string) string {
 	var result []string
