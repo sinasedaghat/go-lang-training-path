@@ -1,6 +1,9 @@
 package conversion
 
-import "strconv"
+import (
+	"errors"
+	"strconv"
+)
 
 func StringsToFloats(strings []string) ([]float64, error) {
 	floats := make([]float64, 0, len(strings))
@@ -8,7 +11,7 @@ func StringsToFloats(strings []string) ([]float64, error) {
 	for _, str := range strings {
 		val, err := strconv.ParseFloat(str, 64)
 		if err != nil {
-			return nil, err
+			return nil, errors.New("can't convert one of string content to float64")
 		}
 
 		floats = append(floats, val)

@@ -25,7 +25,6 @@ func (job *TaxIncludedPriceJob) LoadData() {
 	prices, err := conversion.StringsToFloats(lines)
 
 	if err != nil {
-		fmt.Println("Cant convert file content to prices!")
 		fmt.Println(err)
 		return
 	}

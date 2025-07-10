@@ -2,6 +2,7 @@ package filemanagment
 
 import (
 	"bufio"
+	"errors"
 	"os"
 )
 
@@ -9,7 +10,7 @@ func LinesReader(path string) ([]string, error) {
 	file, err := os.Open(path)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.New("can't open target file")
 	}
 	defer file.Close()
 
@@ -22,7 +23,7 @@ func LinesReader(path string) ([]string, error) {
 
 	err = scanner.Err()
 	if err != nil {
-		return nil, err
+		return nil, errors.New("can't read one of target file's line")
 	}
 
 	return lines, nil
