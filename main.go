@@ -1,28 +1,19 @@
 package main
 
-import "url.com/price-calculator/prices"
+import (
+	"fmt"
 
-// var prices []float64 = []float64{}
+	"url.com/price-calculator/prices"
+)
+
 var taxRates []float64 = []float64{}
 
-// var result map[float64][]float64 = map[float64][]float64{}
-
 func main() {
-	// prices = []float64{10, 20, 30}
 	taxRates = []float64{0, 0.07, 0.1, 0.15}
 
 	for _, rate := range taxRates {
-		priceJob := prices.NewTaxIncludedPriceJob(rate)
-		// pricesIncludeTax := make([]float64, len(prices))
+		priceJob := prices.NewTaxIncludedPriceJob("prices.txt", fmt.Sprintf("tax_%v.json", rate), rate)
 		priceJob.LoadData()
 		priceJob.Process()
-
-		// for index, price := range prices {
-		// 	pricesIncludeTax[index] = price * (1 + rate)
-		// }
-
-		// result[rate] = pricesIncludeTax
 	}
-
-	// fmt.Println(result)
 }
