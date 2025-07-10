@@ -1,6 +1,6 @@
 package main
 
-import "price-calculator/prices"
+import "url.com/price-calculator/prices"
 
 // var prices []float64 = []float64{}
 var taxRates []float64 = []float64{}
@@ -14,6 +14,7 @@ func main() {
 	for _, rate := range taxRates {
 		priceJob := prices.NewTaxIncludedPriceJob(rate)
 		// pricesIncludeTax := make([]float64, len(prices))
+		priceJob.LoadData()
 		priceJob.Process()
 
 		// for index, price := range prices {

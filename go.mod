@@ -1,3 +1,3 @@
-module price-calculator
+module url.com/price-calculator
 
 go 1.24.1
