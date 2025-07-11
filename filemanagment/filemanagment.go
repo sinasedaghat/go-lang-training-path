@@ -23,9 +23,9 @@ func New(iPath, oPath string) FileManagment {
 	}
 }
 
-func (io FileManagment) LinesReader() ([]string, error) {
-	// file, err := os.Open(io.InputFilePath)
-	file, err := os.Open(io.inputFilePath)
+func (fm FileManagment) InputReader() ([]string, error) {
+	// file, err := os.Open(fm.InputFilePath)
+	file, err := os.Open(fm.inputFilePath)
 
 	if err != nil {
 		return nil, errors.New("can't open target file")
@@ -47,9 +47,9 @@ func (io FileManagment) LinesReader() ([]string, error) {
 	return lines, nil
 }
 
-func (io FileManagment) WriteJSON(data any) error {
-	// file, err := os.Create(io.OutputFilePath)
-	file, err := os.Create(io.outputFilePath)
+func (fm FileManagment) OutputWriter(data any) error {
+	// file, err := os.Create(fm.OutputFilePath)
+	file, err := os.Create(fm.outputFilePath)
 
 	if err != nil {
 		return errors.New("can't create file")

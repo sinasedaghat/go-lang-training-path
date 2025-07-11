@@ -4,38 +4,38 @@ import (
 	"fmt"
 
 	"url.com/price-calculator/conversion"
-	"url.com/price-calculator/filemanagment"
+	// "url.com/price-calculator/filemanagment"
+	"url.com/price-calculator/iomanager"
 )
 
 type TaxIncludedPriceJob struct {
 	// filemanagment.FileManagment
-	FileManagment     filemanagment.FileManagment `json:"-"`
-	TaxRate           float64                     `json:"tax_rate"`
-	InputPrices       []float64                   `json:"input_prices"`
-	TaxIncludedPrices map[string]string           `json:"tax_included_prices"`
+	// IOManager         filemanagment.FileManagment `json:"-"`
+	IOManager         iomanager.IOManager `json:"-"`
+	TaxRate           float64             `json:"tax_rate"`
+	InputPrices       []float64           `json:"input_prices"`
+	TaxIncludedPrices map[string]string   `json:"tax_included_prices"`
 }
 
-func (job *TaxIncludedPriceJob) LoadData() {
-	// lines, err := job.LinesReader()
-	lines, err := job.FileManagment.LinesReader()
+func (job *TaxIncludedPriceJob) LoadData() error {
+	// lines, err := job.InputReader()
+	lines, err := job.IOManager.InputReader()
 
 	if err != nil {
-		fmt.Println("Can't read file!")
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	prices, err := conversion.StringsToFloats(lines)
 
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	job.InputPrices = prices
+	return nil
 }
 
-func (job *TaxIncludedPriceJob) Process() {
+func (job *TaxIncludedPriceJob) Process() error {
 	result := make(map[string]string, len(job.InputPrices))
 
 	for _, price := range job.InputPrices {
@@ -44,19 +44,25 @@ func (job *TaxIncludedPriceJob) Process() {
 
 	job.TaxIncludedPrices = result
 
-	// err := job.WriteJSON(job)
-	err := job.FileManagment.WriteJSON(job)
+	// err := job.OutputWriter(job)
+	err := job.IOManager.OutputWriter(job)
 
 	if err != nil {
-		fmt.Println("Can't write in file")
-		fmt.Println(err)
-		return
+		return err
 	}
+	return nil
 }
 
-func NewTaxIncludedPriceJob(inputPath, outputPath string, taxRate float64) *TaxIncludedPriceJob {
+// func NewTaxIncludedPriceJob(inputPath, outputPath string, taxRate float64) *TaxIncludedPriceJob {
+// 	return &TaxIncludedPriceJob{
+// 		FileManagment: filemanagment.New(inputPath, outputPath),
+// 		TaxRate:       taxRate,
+// 	}
+// }
+
+func NewTaxIncludedPriceJob(iom iomanager.IOManager, taxRate float64) *TaxIncludedPriceJob {
 	return &TaxIncludedPriceJob{
-		FileManagment: filemanagment.New(inputPath, outputPath),
-		TaxRate:       taxRate,
+		IOManager: iom,
+		TaxRate:   taxRate,
 	}
 }
