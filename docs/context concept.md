@@ -1,0 +1,1 @@
+**context** usually refers to an object, variable, or parameter that carries information about the current state, configuration, environment, or lifecycle of a process or request. ([GPT Answer](https://chatgpt.com/share/6883405f-7014-8002-acbf-d1ce9ba818ef))
