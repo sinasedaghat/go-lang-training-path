@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
 	"name": "Test Event",
-	"description": "No Description",
+	"description": "No Description ...",
 	"location": "thr",
-	"dueDate": "2006-01-02T15:04:05.000Z"
+	"due_date": "2006-01-02T15:04:05.000Z"
 }
