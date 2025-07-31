@@ -13,7 +13,8 @@ import (
 func main() {
 	database.Initialize()
 	server := gin.Default()
-	defer server.Run(":8080") // Don't call it without "defer" because none of the endpoints are registered. Or call it at the end of the function.
+	// defer server.Run(":8080") // Don't call it without "defer" because none of the endpoints are registered. Or call it at the end of the function.
+	// You should not defer server.Run() — this will delay your server start until the main() function exits.
 
 	server.GET("/favicon.ico", func(ctx *gin.Context) {
 		ctx.Status(http.StatusNoContent)
@@ -21,6 +22,8 @@ func main() {
 
 	server.GET("/events", getEvents)
 	server.POST("/events", createEvents)
+
+	server.Run(":8080")
 }
 
 func getEvents(ctx *gin.Context) {
