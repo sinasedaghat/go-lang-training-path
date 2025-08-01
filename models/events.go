@@ -117,3 +117,22 @@ func (e Event) Save() error {
 
 	return err
 }
+
+func (e Event) Update() error {
+	fmt.Println("event from model.update", e)
+	query := `
+		UPDATE events
+		SET user_id = ?, name = ?, description = ?, location = ?, due_date = ?
+		WHERE id = ?; 
+	`
+	statement, err := database.DB.Prepare(query)
+	if err != nil {
+		fmt.Println("⚠️ error from database.DB.Prepare() in update function ===>", err)
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(e.UserId, e.Name, e.Description, e.Location, e.DueDate, e.UserId)
+
+	return err
+}
