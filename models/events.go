@@ -45,13 +45,13 @@ func (e Event) Save() error {
 
 	fmt.Println("result from save events ===> ", result)
 
-	index, err := result.LastInsertId()
-	if err != nil {
-		fmt.Println("⚠️ error from result.LastInsertId() in save function ===>", err)
-	}
-	fmt.Println("index from save event ===> ", index)
+	// index, err := result.LastInsertId()
+	// if err != nil {
+	// 	fmt.Println("⚠️ error from result.LastInsertId() in save function ===>", err)
+	// }
+	// fmt.Println("index from save event ===> ", index)
 
-	e.ID = int(index)
+	// e.ID = int(index) // update e id from ID database AUTO_INCREMENT
 
 	return err
 }
