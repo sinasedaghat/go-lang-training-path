@@ -24,6 +24,68 @@ type Event struct {
 	// CreateDate  time.Time ``
 }
 
+func GetEvents() ([]Event, error) {
+	query := "SELECT * FROM events"
+	rows, err := database.DB.Query(query)
+
+	if err != nil {
+		fmt.Println("⚠️ error from database.DB.Query() in getEvents function ===>", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var events = []Event{}
+	for rows.Next() {
+		var event Event
+		// err = rows.Scan(&event.ID, &event.UserId, &event.Name, &event.Description, &event.Location, &event.DueDate, &event.CreateDate)
+
+		err = rows.Scan(
+			&event.ID,
+			&event.UserId,
+			&event.Name,
+			&event.Description,
+			&event.Location,
+			&event.DueDate,
+			&event.CreateDate,
+		)
+
+		if err != nil {
+			fmt.Println("⚠️ error from rows.Scan() for loop in getEvents function ===>", err)
+			return nil, err
+		}
+
+		events = append(events, event)
+	}
+
+	return events, nil
+}
+
+func GetEvent(id int) (*Event, error) {
+	query := "SELECT * FROM events WHERE id = ?"
+
+	row := database.DB.QueryRow(query, id)
+
+	var event Event
+	// err := row.Scan(&event.ID, &event.UserId, &event.Name, &event.Description, &event.Location, &event.DueDate, &event.CreateDate)
+
+	err := row.Scan(
+		&event.ID,
+		&event.UserId,
+		&event.Name,
+		&event.Description,
+		&event.Location,
+		&event.DueDate,
+		&event.CreateDate,
+	)
+
+	if err != nil {
+		fmt.Println("⚠️ error from row.Scan() in GetEvent function ===>", err)
+		return nil, err
+	}
+
+	return &event, nil
+}
+
 func (e Event) Save() error {
 	query := `
 	INSERT INTO events(user_id, name, description, location, due_date)
@@ -54,32 +116,4 @@ func (e Event) Save() error {
 	// e.ID = int(index) // update e id from ID database AUTO_INCREMENT
 
 	return err
-}
-
-func GetEvents() ([]Event, error) {
-	query := "SELECT * FROM events"
-	rows, err := database.DB.Query(query)
-
-	if err != nil {
-		fmt.Println("⚠️ error from database.DB.Query() in getEvents function ===>", err)
-		return nil, err
-	}
-	fmt.Println("rows from getEvents ===> ", rows)
-	defer rows.Close()
-
-	var events = []Event{}
-	for rows.Next() {
-		var event Event
-		err = rows.Scan(&event.ID, &event.UserId, &event.Name, &event.Description, &event.Location, &event.DueDate, &event.CreateDate)
-
-		if err != nil {
-			fmt.Println("⚠️ error from rows.Scan() for loop in getEvents function ===>", err)
-			return nil, err
-		}
-		fmt.Println("event from rows.Scan() for loop in getEvents function ===>", event)
-
-		events = append(events, event)
-	}
-
-	return events, nil
 }
