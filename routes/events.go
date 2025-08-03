@@ -103,3 +103,30 @@ func updateEvent(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, gin.H{"message": "update event successful"})
 }
+
+func deleteEvent(ctx *gin.Context) {
+	eventId, err := getId(ctx)
+
+	if err != nil {
+		fmt.Println("error from read id from deleteEvent function", err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "invalid ID parameter"})
+		return
+	}
+
+	event, err := models.GetEvent(eventId)
+
+	if err != nil {
+		fmt.Println("error from get specific event in deleteEvent function", err)
+		ctx.JSON(http.StatusNotFound, gin.H{"message": "The desired record was not found."})
+		return
+	}
+
+	err = event.Delete()
+	if err != nil {
+		fmt.Println("error from delete specific event in deleteEvent function", err)
+		ctx.JSON(http.StatusNotFound, gin.H{"message": "Could not delete desired record"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "delete event successful."})
+}
