@@ -29,15 +29,21 @@ func Initialize() {
 	DB.SetMaxOpenConns(10)
 	DB.SetMaxIdleConns(5)
 
-	err = createEventTable()
+	err = createEventsTable()
 
 	if err != nil {
-		fmt.Println("⚠️ createEventTable() error ==>", err)
-		panic("Could not create event table.")
+		fmt.Println("⚠️ createEventsTable() error ==>", err)
+		panic("Could not create events table.")
+	}
+
+	err = createUsersTable()
+	if err != nil {
+		fmt.Println("⚠️ createUsersTable() error ==>", err)
+		panic("Could not create users table.")
 	}
 }
 
-func createEventTable() error {
+func createEventsTable() error {
 	query := `
 		CREATE TABLE IF NOT EXISTS events (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -51,5 +57,22 @@ func createEventTable() error {
 	`
 	_, err := DB.Exec(query)
 
+	return err
+}
+
+func createUsersTable() error {
+	query := `
+		CREATE TABLE IF NOT EXISTS users (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			email TEXT NOT NULL UNIQUE,
+			password TEXT NOT NULL,
+			first_name TEXT DEFAULT '',
+			last_name TEXT DEFAULT ''
+		)
+	`
+
+	result, err := DB.Exec(query)
+
+	fmt.Println("result from create users table", result)
 	return err
 }

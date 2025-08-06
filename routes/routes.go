@@ -16,4 +16,7 @@ func RegisterRoutes(server *gin.Engine) {
 	server.POST("/events", createEvents)
 	server.PUT("/events/:id", updateEvent)
 	server.DELETE("/events/:id", deleteEvent)
+
+	// server.GET("/users", getUsers) // TODO: we need high level role (admin) for get all users and change some thing in user data
+	server.POST("/users", createUsers)
 }
