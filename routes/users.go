@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mattn/go-sqlite3"
 	"sample-url.com/REST-API/models"
+	"sample-url.com/REST-API/utils"
 )
 
 func createUsers(ctx *gin.Context) {
@@ -49,13 +50,19 @@ func signInUsers(ctx *gin.Context) {
 		return
 	}
 
-	err = user.Validator()
+	err = user.Get()
 
 	if err != nil {
-		fmt.Println("error from userValidator in user router file", err)
+		fmt.Println("error from user.Get in user router file", err)
 		ctx.JSON(http.StatusUnauthorized, gin.H{"message": "Email or Password is Invalid."})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "You are Authorize"})
+	token, err := utils.GenerateToken(user.ID, user.Email)
+	if err != nil {
+		fmt.Println("this error from GenerateToken utile from sign in user", err)
+		ctx.JSON(http.StatusUnauthorized, gin.H{"message": "Email or Password is Invalid."})
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "You are Authorize", "token": token})
 }

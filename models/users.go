@@ -16,6 +16,21 @@ type User struct {
 	LastName  string `json:"last_name"`
 }
 
+// func (u User) claims() map[string]any {
+// 	return map[string]any{
+// 		"id":         u.ID,
+// 		"email":      u.Email,
+// 		"first_name": u.FirstName,
+// 		"last_name":  u.LastName,
+// 	}
+// }
+
+// 	claims := jwt.MapClaims{
+// 		"id": id,
+// 		"email": email,
+// 		"exp": time.Now().Add(30 * time.Minute).Unix(),
+// 	}
+
 func (u User) Save() error {
 	// query := `
 	// 	INSERT INTO users(email, password, first_name, last_name)
@@ -50,17 +65,18 @@ func (u User) Save() error {
 	return err
 }
 
-func (u *User) Validator() error {
-	query := `SELECT password FROM users WHERE email = ?`
+func (u *User) Get() error {
+	query := `SELECT * FROM users WHERE email = ?`
 
 	row := database.DB.QueryRow(query, u.Email)
 
 	var password string
 
-	row.Scan(&password)
+	row.Scan(&u.ID, &u.Email, &password, &u.FirstName, &u.LastName)
 
 	if !utils.PasswordValidator(password, u.Password) {
 		return errors.New("invalid password")
 	}
+
 	return nil
 }
