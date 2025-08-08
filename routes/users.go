@@ -16,7 +16,7 @@ func createUsers(ctx *gin.Context) {
 
 	if err != nil {
 		fmt.Println("error from create user read body of request", err)
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "can't pars request's body"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Couldn't pars request's body"})
 		return
 	}
 
@@ -36,4 +36,26 @@ func createUsers(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "create new user successful"})
+}
+
+func signInUsers(ctx *gin.Context) {
+	var user models.User
+
+	err := ctx.ShouldBindJSON(&user)
+
+	if err != nil {
+		fmt.Println("error from sign in function when read body", err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Couldn't pars request's body"})
+		return
+	}
+
+	err = user.Validator()
+
+	if err != nil {
+		fmt.Println("error from userValidator in user router file", err)
+		ctx.JSON(http.StatusUnauthorized, gin.H{"message": "Email or Password is Invalid."})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "You are Authorize"})
 }

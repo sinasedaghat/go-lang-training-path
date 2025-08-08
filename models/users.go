@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 
 	"sample-url.com/REST-API/database"
@@ -47,4 +48,19 @@ func (u User) Save() error {
 
 	fmt.Println("result from save user ===> ", result)
 	return err
+}
+
+func (u *User) Validator() error {
+	query := `SELECT password FROM users WHERE email = ?`
+
+	row := database.DB.QueryRow(query, u.Email)
+
+	var password string
+
+	row.Scan(&password)
+
+	if !utils.PasswordValidator(password, u.Password) {
+		return errors.New("invalid password")
+	}
+	return nil
 }

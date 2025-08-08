@@ -6,6 +6,7 @@
 | -------------- | --------------------------- | ------------------------------------ |
 | Authentication | Who are you?                | Logging in with email + password     |
 | Authorization  | What are you allowed to do? | Can this user access `/admin` route? |
+
 ➡️ You always authenticate first, then authorize.
 
 - 💡 You must **authenticate** a user before you can **authorize** their actions.
@@ -211,7 +212,6 @@ JWT is URL-safe string: `<header>.<payload>.<signature>`
     - Backend:
       - Deletes refresh token from DB
       - Optionally, blacklists the JWT (if needed)
----
 ---
 ## 🔐 Summary: When to Use What?
 | Use Case                   | Recommendation             |

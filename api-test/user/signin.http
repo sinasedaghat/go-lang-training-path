@@ -1,7 +1,8 @@
-POST http://localhost:8080/sign-up
+POST http://localhost:8080/sign-in
 Content-Type: application/json
 
 {
 	"email": "sina.seda@gmail.com",
-	"password": "sina1234"
+	"password": "sina123"
 }
+
