@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"sample-url.com/REST-API/models"
+	"sample-url.com/REST-API/utils"
 )
 
 func getId(ctx *gin.Context) (int, error) {
@@ -47,6 +48,24 @@ func getEvent(ctx *gin.Context) {
 }
 
 func createEvents(ctx *gin.Context) {
+	// Authentication action
+	token := ctx.Request.Header.Get("Authentication")
+
+	if token == "" {
+		fmt.Println("token is empty")
+		ctx.JSON(http.StatusUnauthorized, gin.H{"message": "please sign in."})
+		return
+	}
+
+	ok, id := utils.ParseTokenAndGetID(token)
+	fmt.Println("ok from ParseTokenAndGetID", ok)
+	fmt.Println("id from ParseTokenAndGetID", id)
+	if !ok {
+		fmt.Println("parse ParseTokenAndGetID has error")
+		ctx.JSON(http.StatusUnauthorized, gin.H{"message": "please sign in."})
+		return
+	}
+
 	var event models.Event
 
 	err := ctx.ShouldBindJSON(&event)
