@@ -7,7 +7,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"sample-url.com/REST-API/models"
-	"sample-url.com/REST-API/utils"
 )
 
 func getId(ctx *gin.Context) (int, error) {
@@ -48,25 +47,10 @@ func getEvent(ctx *gin.Context) {
 }
 
 func createEvents(ctx *gin.Context) {
-	// Authentication action
-	token := ctx.Request.Header.Get("Authentication")
-
-	if token == "" {
-		fmt.Println("token is empty")
-		ctx.JSON(http.StatusUnauthorized, gin.H{"message": "please sign in."})
-		return
-	}
-
-	ok, id := utils.ParseTokenAndGetID(token)
-	fmt.Println("ok from ParseTokenAndGetID", ok)
-	fmt.Println("id from ParseTokenAndGetID", id)
-	if !ok {
-		fmt.Println("parse ParseTokenAndGetID has error")
-		ctx.JSON(http.StatusUnauthorized, gin.H{"message": "please sign in."})
-		return
-	}
+	userId := ctx.GetInt("user_id")
 
 	var event models.Event
+	event.UserId = userId
 
 	err := ctx.ShouldBindJSON(&event)
 
@@ -76,7 +60,6 @@ func createEvents(ctx *gin.Context) {
 		return
 	}
 
-	event.UserId = 1 // TODO: after create user table
 	err = event.Save()
 	if err != nil {
 		fmt.Println("error from create event save function", err)
@@ -88,6 +71,7 @@ func createEvents(ctx *gin.Context) {
 }
 
 func updateEvent(ctx *gin.Context) {
+	// TODO: This stripped code needs to be added to a new middleware.
 	eventId, err := getId(ctx)
 
 	if err != nil {
@@ -96,11 +80,16 @@ func updateEvent(ctx *gin.Context) {
 		return
 	}
 
-	_, err = models.GetEvent(eventId)
+	eventModel, err := models.GetEvent(eventId)
 
 	if err != nil {
 		fmt.Println("error from get specific event in updateEvent function", err)
 		ctx.JSON(http.StatusNotFound, gin.H{"message": "The desired record was not found."})
+		return
+	}
+
+	if eventModel.UserId != ctx.GetInt("user_id") {
+		ctx.JSON(http.StatusForbidden, gin.H{"message": "you don't access to update this event"})
 		return
 	}
 
@@ -113,7 +102,7 @@ func updateEvent(ctx *gin.Context) {
 		return
 	}
 	event.ID = eventId
-	event.UserId = 1 // TODO: after create user table
+	event.UserId = ctx.GetInt("user_id")
 	err = event.Update()
 	if err != nil {
 		fmt.Println("error from update event in update function", err)
@@ -137,6 +126,11 @@ func deleteEvent(ctx *gin.Context) {
 	if err != nil {
 		fmt.Println("error from get specific event in deleteEvent function", err)
 		ctx.JSON(http.StatusNotFound, gin.H{"message": "The desired record was not found."})
+		return
+	}
+
+	if event.UserId != ctx.GetInt("user_id") {
+		ctx.JSON(http.StatusForbidden, gin.H{"message": "you don't access to update this event"})
 		return
 	}
 
