@@ -44,7 +44,7 @@ func (u User) Save() error {
 
 	statement, err := database.DB.Prepare(query)
 	if err != nil {
-		fmt.Println("⚠️ error from database.DB.Prepare() in save function ===>", err)
+		fmt.Println("🗂️ Error from Prepare(query) of user.Save method:", err)
 		return err
 	}
 	defer statement.Close()
@@ -52,16 +52,16 @@ func (u User) Save() error {
 	hashedPassword, err := utils.HashPassword(u.Password)
 
 	if err != nil {
-		fmt.Println("⚠️ error from HashPassword function", err)
+		fmt.Println("🗂️ Error from utils.HashPassword(password) of user.Save method:", err)
 		return err
 	}
 
-	result, err := statement.Exec(u.Email, hashedPassword)
+	_, err = statement.Exec(u.Email, hashedPassword)
+	// result, err := statement.Exec(u.Email, hashedPassword)
 	if err != nil {
-		fmt.Println("⚠️ error from statement.Exec() in save function ===>", err)
+		fmt.Println("🗂️ Error from Exec(data...) of user.Save method:", err)
 	}
 
-	fmt.Println("result from save user ===> ", result)
 	return err
 }
 

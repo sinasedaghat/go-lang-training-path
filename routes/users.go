@@ -16,7 +16,7 @@ func createUsers(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&user)
 
 	if err != nil {
-		fmt.Println("error from create user read body of request", err)
+		fmt.Println("🫴 error from read body of request in the createUsers handler:", err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Couldn't pars request's body"})
 		return
 	}
@@ -24,14 +24,14 @@ func createUsers(ctx *gin.Context) {
 	err = user.Save()
 
 	if err != nil {
+		// TODO: use these for create clear error
 		sqliteErr, ok := err.(sqlite3.Error)
+		fmt.Println("📋 (for TODO) sqliteErr ====>", sqliteErr)
+		fmt.Println("📋 (for TODO) ok ===> ", ok)
+		fmt.Println("📋 (for TODO) sqliteErr.ExtendedCode ===> ", sqliteErr.ExtendedCode)
+		fmt.Println("📋 (for TODO) sqlite3.ErrConstraintUnique ===> ", sqlite3.ErrConstraintUnique)
 
-		fmt.Println("sqliteErr ====>", sqliteErr)
-		fmt.Println("ok ===> ", ok)
-		fmt.Println("sqliteErr.ExtendedCode ===> ", sqliteErr.ExtendedCode)
-		fmt.Println("sqlite3.ErrConstraintUnique ===> ", sqlite3.ErrConstraintUnique)
-
-		fmt.Println("error from create user save function", err)
+		fmt.Println("🫴 error from user.save() in the createUsers handler:", err)
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "something is wrong"})
 		return
 	}
@@ -45,7 +45,7 @@ func signInUsers(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&user)
 
 	if err != nil {
-		fmt.Println("error from sign in function when read body", err)
+		fmt.Println("🫴 error from read body of request in the signInUsers handler:", err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Couldn't pars request's body"})
 		return
 	}
@@ -60,7 +60,7 @@ func signInUsers(ctx *gin.Context) {
 
 	token, err := utils.GenerateToken(user.ID, user.Email)
 	if err != nil {
-		fmt.Println("this error from GenerateToken utile from sign in user", err)
+		fmt.Println("🫴 error from utils.GenerateToken(...data) in the signInUsers handler:", err)
 		ctx.JSON(http.StatusUnauthorized, gin.H{"message": "Email or Password is Invalid."})
 	}
 

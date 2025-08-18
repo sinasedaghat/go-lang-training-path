@@ -13,15 +13,19 @@ func Authentication(ctx *gin.Context) {
 	token := ctx.GetHeader("Authentication")
 
 	if token == "" {
-		fmt.Println("🔀 header don't have token")
+		fmt.Println("🔀 Header don't have token")
+		// ctx.JSON(http.StatusUnauthorized, gin.H{"message": "Please signIn."})
+		// ctx.Abort()
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "Please signIn."})
+		return
 	}
 
 	claim, err := utils.ValidateAndParseToken(token)
 
 	if err != nil {
-		fmt.Println("🔀 error after validate and parse token: ", err)
+		fmt.Println("🔀 Error after validate and parse token:", err)
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "Authentication failed!"})
+		return
 	}
 
 	id, _ := claim["id"].(float64)

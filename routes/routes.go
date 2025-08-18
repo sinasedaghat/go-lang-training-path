@@ -23,12 +23,14 @@ func RegisterRoutes(server *gin.Engine) {
 	auth := server.Group("/", middleware.Authentication)
 	{
 		auth.POST("/events", createEvents)
-		auth.PUT("/events/:id", updateEvent)    // TODO: create new middleware for give `id` from url
-		auth.DELETE("/events/:id", deleteEvent) // TODO: create new middleware for give `id` from url
+		auth.PUT("/events/:id", middleware.URLParameter(), updateEvent)
+		auth.DELETE("/events/:id", middleware.URLParameter(), deleteEvent)
+		auth.POST("/events/:id/register", middleware.URLParameter(), register)
+		auth.DELETE("/events/:id/register", middleware.URLParameter(), unregister)
 	}
 
 	server.GET("/events", getEvents)
-	server.GET("/events/:id", getEvent)
+	server.GET("/events/:id", middleware.URLParameter(), getEvent)
 
 	// server.GET("/users", getUsers) // TODO: we need high level role (admin) for get all users and change some thing in user data
 	server.POST("/sign-up", createUsers)

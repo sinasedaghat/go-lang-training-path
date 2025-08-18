@@ -29,7 +29,7 @@ func GetEvents() ([]Event, error) {
 	rows, err := database.DB.Query(query)
 
 	if err != nil {
-		fmt.Println("⚠️ error from database.DB.Query() in getEvents function ===>", err)
+		fmt.Println("🗂️ Error from Query(query) of GetEvents function:", err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -50,7 +50,7 @@ func GetEvents() ([]Event, error) {
 		)
 
 		if err != nil {
-			fmt.Println("⚠️ error from rows.Scan() for loop in getEvents function ===>", err)
+			fmt.Println("🗂️ Error from Scan(pointers...) of GetEvents function:", err)
 			return nil, err
 		}
 
@@ -79,7 +79,7 @@ func GetEvent(id int) (*Event, error) {
 	)
 
 	if err != nil {
-		fmt.Println("⚠️ error from row.Scan() in GetEvent function ===>", err)
+		fmt.Println("🗂️ Error from Scan(pointers...) of GetEvent function:", err)
 		return nil, err
 	}
 
@@ -94,18 +94,16 @@ func (e Event) Save() error {
 
 	statement, err := database.DB.Prepare(query)
 	if err != nil {
-		fmt.Println("⚠️ error from database.DB.Prepare() in save function ===>", err)
+		fmt.Println("🗂️ Error from Prepare(query) of event.Save method:", err)
 		return err
 	}
 	defer statement.Close()
 
-	result, err := statement.Exec(e.UserId, e.Name, e.Description, e.Location, e.DueDate)
+	_, err = statement.Exec(e.UserId, e.Name, e.Description, e.Location, e.DueDate)
+	// result, err := statement.Exec(e.UserId, e.Name, e.Description, e.Location, e.DueDate)
 	if err != nil {
-		fmt.Println("⚠️ error from statement.Exec() in save function ===>", err)
-		return err
+		fmt.Println("🗂️ Error from Exec(data...) of event.Save method:", err)
 	}
-
-	fmt.Println("result from save events ===> ", result)
 
 	// index, err := result.LastInsertId()
 	// if err != nil {
@@ -127,12 +125,15 @@ func (e Event) Update() error {
 	`
 	statement, err := database.DB.Prepare(query)
 	if err != nil {
-		fmt.Println("⚠️ error from database.DB.Prepare() in update function ===>", err)
+		fmt.Println("🗂️ Error from Prepare(query) of event.Update method:", err)
 		return err
 	}
 	defer statement.Close()
 
 	_, err = statement.Exec(e.UserId, e.Name, e.Description, e.Location, e.DueDate, e.ID)
+	if err != nil {
+		fmt.Println("🗂️ Error from Exec(data...) of event.Update method:", err)
+	}
 
 	return err
 }
@@ -142,11 +143,54 @@ func (e Event) Delete() error {
 
 	statement, err := database.DB.Prepare(query)
 	if err != nil {
-		fmt.Println("⚠️ error from database.DB.Prepare() in delete function ===>", err)
+		fmt.Println("🗂️ Error from Prepare(query) of event.Delete method:", err)
 		return err
 	}
 
 	_, err = statement.Exec(e.ID)
+	if err != nil {
+		fmt.Println("🗂️ Error from Exec(data...) of event.Delete method:", err)
+	}
 
+	return err
+}
+
+func (e Event) Register(userId int) error {
+	query := "INSERT INTO registration(event_id, user_id) VALUES (?, ?)"
+
+	statement, err := database.DB.Prepare(query)
+
+	if err != nil {
+		fmt.Println("🗂️ Error from Prepare(query) of event.Register method:", err)
+		return err
+	}
+
+	defer statement.Close()
+
+	_, err = statement.Exec(e.ID, userId)
+
+	if err != nil {
+		fmt.Println("🗂️ Error from Exec(data...) of event.Register method:", err)
+	}
+	return err
+}
+
+func (e Event) Unregister(userId int) error {
+	query := "DELETE FROM registration WHERE event_id = ? AND user_id = ?"
+
+	statement, err := database.DB.Prepare(query)
+
+	if err != nil {
+		fmt.Println("🗂️ Error from Prepare(query) of event.Unregister method:", err)
+		return err
+	}
+
+	defer statement.Close()
+
+	_, err = statement.Exec(e.ID, userId)
+
+	if err != nil {
+		fmt.Println("🗂️ Error from Exec(data...) of event.Unregister method:", err)
+	}
 	return err
 }

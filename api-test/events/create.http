@@ -3,7 +3,7 @@ Content-Type: application/json
 Authentication: 
 
 {
-	"name": "USER 2: Test Event failed",
+	"name": "USER 1: Test Event",
 	"description": "No Description ...",
 	"location": "thr",
 	"due_date": "2006-01-02T15:04:05.000Z"
