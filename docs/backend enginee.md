@@ -1,0 +1,13 @@
+Backend engineering involves building and maintaining the server‑side components of applications – including the application logic, databases, and APIs that power client interfaces. A backend engineer “oversees the building of a software application’s structure” by writing server scripts and APIs for front‑end use. In other words, they design solutions (problem‑solving, security, data storage, integration) and set the technical direction for the software team. Key responsibilities include designing server-side logic and data models, implementing business rules, and ensuring data can be stored, processed, and retrieved securely and efficiently. Backend work typically focuses on multi-tier web applications, handling web services and databases (SQL/NoSQL) and ensuring that data storage and business logic are robust and performant.
+
+Backend engineers must master a wide range of tools and concepts. Modern teams often use both monolithic and microservices architectures. They design RESTful or gRPC APIs, manage message brokers for inter-service communication, and implement caching and load balancing to improve scalability. They also set up CI/CD pipelines (e.g. Jenkins, GitLab CI) and monitoring (Prometheus, Grafana) for automated deployment and observability. In cloud or containerized environments they use Docker and Kubernetes to package and orchestrate services. Security is paramount: backend engineers enforce authentication/authorization (often via middleware), encrypt data in transit and at rest, and defend against common vulnerabilities like SQL injection. They work closely with front-end and DevOps teams to ensure the application integrates smoothly from end to end.
+
+- Server-side application logic: Writing APIs and services that implement business functionality.
+
+- Data storage and management: Designing and optimizing databases (e.g. schema design, ACID transactions) and cache layers for performance.
+
+- Scalability and performance: Implementing horizontal scaling, load balancing, caching strategies, and asynchronous processing to handle high load.
+
+- Security and reliability: Enforcing secure authentication/authorization, encryption (TLS/AES), input validation, and common security practices (e.g. OWASP Top 10).
+
+- DevOps and tooling: Using containers (Docker), orchestration (Kubernetes), cloud services (AWS, GCP, Azure), and infrastructure-as-code (Terraform) for deployment and maintenance.

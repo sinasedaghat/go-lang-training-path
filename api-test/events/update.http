@@ -1,0 +1,10 @@
+PUT http://localhost:8080/events/5
+Content-Type: application/json
+Authentication:
+
+{
+	"name": "update from USER 2 Update Event (id: 5)",
+	"description": "Update Description for first id...",
+	"location": "thr",
+	"due_date": "2025-01-02T15:04:05.000Z"
+}
