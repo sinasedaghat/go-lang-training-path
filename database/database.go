@@ -3,49 +3,73 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"log"
 
 	_ "github.com/mattn/go-sqlite3"
+	"sample-url.com/REST-API/constant"
 )
 
 var DB *sql.DB
 
 func Initialize() {
 	var err error
+	// Open database connection
 	DB, err = sql.Open("sqlite3", "app.db")
-
 	if err != nil {
-		fmt.Println("🗄️ sql.open() has  error:", err)
-		panic("Could not access to data base (create or open).")
+		log.Fatalf("🗄️ sql.Open() error: %v", err)
 	}
 
-	err = DB.Ping()
-	if err != nil {
-		fmt.Println("🗄️ Ping() has error:", err)
-		panic("Could not connect to database.")
+	// Ensure foreign key constraints are enforced
+	if _, err := DB.Exec("PRAGMA foreign_keys = ON;"); err != nil { // Without this, the FK is ignored.
+		log.Fatalf("🗄️ Enable foreign keys (DB.Exec(PRAGMA foreign_keys query) error: %v", err)
 	}
 
-	// defer DB.Close()
+	// Verify connection
+	if err := DB.Ping(); err != nil {
+		log.Fatalf("🗄️ Ping() error: %v", err)
+	}
 
+	//Connection pool tuning
 	DB.SetMaxOpenConns(10)
 	DB.SetMaxIdleConns(5)
 
-	err = createUsersTable()
-	if err != nil {
-		fmt.Println("🗄️ createUsersTable() has error:", err)
-		panic("Could not create users table.")
-	}
+	// Migrations
+	must(createUsersTable, "users")
+	must(createEventsTable, "events")
+	must(createRegistrationTable, "registration")
+	must(createRolesTable, "roles")
 
-	err = createEventsTable()
-	if err != nil {
-		fmt.Println("🗄️ createEventsTable() has error:", err)
-		panic("Could not create events table.")
+	// Seeds
+	/*
+		when we have many seed functions;
+		we can use this struct:
+			[]struct {
+				name string
+				fn   func() error
+			}
+		and create struct of seeds and use for loop for call all of seed functions.
+	*/
+	if err := seedRoles(); err != nil {
+		log.Fatalf("🌱 Failed to seed %s: %v", "roles", err)
 	}
+}
 
-	err = createRegistrationTable()
-	if err != nil {
-		fmt.Println("🗄️ createRegistrationTable() has error:", err)
-		panic("Could not create registration table.")
+func must(createFunc func() error, tableName string) {
+	if err := createFunc(); err != nil {
+		log.Fatalf("🗄️ Failed to create %s table: %v", tableName, err)
 	}
+}
+
+func createRolesTable() error {
+	query := `
+		CREATE TABLE IF NOT EXISTS roles (
+			id INTEGER PRIMARY KEY,
+			label TEXT NOT NULL UNIQUE
+		)
+	`
+	_, err := DB.Exec(query)
+
+	return err
 }
 
 func createUsersTable() error {
@@ -55,7 +79,12 @@ func createUsersTable() error {
 			email TEXT NOT NULL UNIQUE,
 			password TEXT NOT NULL,
 			first_name TEXT DEFAULT '',
-			last_name TEXT DEFAULT ''
+			last_name TEXT DEFAULT '',
+			role_id INTEGER,
+
+			FOREIGN KEY (role_id)
+				REFERENCES roles(id)
+				ON DELETE RESTRICT
 		)
 	`
 	_, err := DB.Exec(query)
@@ -73,7 +102,10 @@ func createEventsTable() error {
 			location TEXT NOT NULL,
 			due_date DATETIME NOT NULL,
 			create_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-			FOREIGN KEY (user_id) REFERENCES users(id)
+
+			FOREIGN KEY (user_id) 
+				REFERENCES users(id)
+				ON DELETE CASCADE
 		)
 	`
 	_, err := DB.Exec(query)
@@ -87,11 +119,31 @@ func createRegistrationTable() error {
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			event_id INTEGER,
 			user_id INTEGER,
-			FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE,
-			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+
+			FOREIGN KEY (event_id)
+				REFERENCES events(id)
+				ON DELETE CASCADE,
+			FOREIGN KEY (user_id)
+				REFERENCES users(id)
+				ON DELETE CASCADE
 		)
 	`
 	_, err := DB.Exec(query)
 
 	return err
+}
+
+func seedRoles() error {
+	query := `
+		INSERT INTO roles(id, label) VALUES (?, ?)
+	  ON CONFLICT(id) DO UPDATE SET label=excluded.label;
+	`
+
+	for _, role := range constant.Roles {
+		if _, err := DB.Exec(query, role.Value, role.Label); err != nil {
+			return fmt.Errorf("🌱 failed to seed role %q: %w", role.Label, err)
+		}
+	}
+
+	return nil
 }
