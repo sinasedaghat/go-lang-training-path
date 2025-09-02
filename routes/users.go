@@ -6,12 +6,21 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mattn/go-sqlite3"
+	"sample-url.com/REST-API/constant"
 	"sample-url.com/REST-API/models"
 	"sample-url.com/REST-API/utils"
 )
 
 func createUsers(ctx *gin.Context) {
 	var user models.User
+	user.RoleId = constant.DefaultRole()
+
+	if value, exists := ctx.Get("role_id"); exists {
+		fmt.Println(value)
+		if roleId, ok := value.(int); ok {
+			user.RoleId = roleId
+		}
+	}
 
 	err := ctx.ShouldBindJSON(&user)
 
@@ -66,3 +75,7 @@ func signInUsers(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "You are Authorize", "token": token})
 }
+
+// func getUsers(ctx *gin.Context) {
+
+// }

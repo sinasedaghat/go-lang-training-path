@@ -85,6 +85,7 @@ func createUsersTable() error {
 			FOREIGN KEY (role_id)
 				REFERENCES roles(id)
 				ON DELETE RESTRICT
+				ON UPDATE CASCADE
 		)
 	`
 	_, err := DB.Exec(query)

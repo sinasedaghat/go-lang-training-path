@@ -2,8 +2,10 @@ package routes
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
+	"sample-url.com/REST-API/constant"
 	"sample-url.com/REST-API/middleware"
 )
 
@@ -27,12 +29,21 @@ func RegisterRoutes(server *gin.Engine) {
 		auth.DELETE("/events/:id", middleware.URLParameter(), deleteEvent)
 		auth.POST("/events/:id/register", middleware.URLParameter(), register)
 		auth.DELETE("/events/:id/register", middleware.URLParameter(), unregister)
+		// auth.GET("/users", middleware., getUsers) // TODO: this method return all users
 	}
 
 	server.GET("/events", getEvents)
 	server.GET("/events/:id", middleware.URLParameter(), getEvent)
 
-	// server.GET("/users", getUsers) // TODO: we need high level role (admin) for get all users and change some thing in user data
+	server.POST("/admin/sign-up", func(ctx *gin.Context) {
+		for _, role := range constant.Roles {
+			if strings.ToLower(role.Label) == "admin" {
+				ctx.Set("role_id", role.Value)
+				break
+			}
+		}
+		ctx.Next()
+	}, createUsers)
 	server.POST("/sign-up", createUsers)
 	server.POST("/sign-in", signInUsers)
 }
