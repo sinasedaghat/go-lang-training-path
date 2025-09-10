@@ -27,8 +27,8 @@ func RegisterRoutes(server *gin.Engine) {
 		auth.POST("/events", createEvents)
 		auth.PUT("/events/:id", middleware.URLParameter(), updateEvent)
 		auth.DELETE("/events/:id", middleware.URLParameter(), deleteEvent)
-		auth.POST("/events/:id/register", middleware.URLParameter(), register)
-		auth.DELETE("/events/:id/register", middleware.URLParameter(), unregister)
+		auth.POST("/events/:id/register", middleware.URLParameter(), registerEvent)
+		auth.DELETE("/events/:id/register", middleware.URLParameter(), unregisterEvent)
 		// auth.GET("/users", middleware., getUsers) // TODO: this method return all users
 	}
 
@@ -43,7 +43,7 @@ func RegisterRoutes(server *gin.Engine) {
 			}
 		}
 		ctx.Next()
-	}, createUsers)
-	server.POST("/sign-up", createUsers)
-	server.POST("/sign-in", signInUsers)
+	}, createUser)
+	server.POST("/sign-up", createUser)
+	server.POST("/sign-in", signInUser)
 }

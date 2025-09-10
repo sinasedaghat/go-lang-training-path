@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,113 +9,134 @@ import (
 )
 
 func getEvents(ctx *gin.Context) {
+	// get all events from DB
 	events, err := models.GetEvents()
 
 	if err != nil {
-		fmt.Println("🫴 error from give events in the getEvents handler:", err)
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "something is wrong"})
+		log.Printf("🫴 getEvents() handler function has error when models.GetEvents() call: %v", err)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Do not have access to records."})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, events)
+	ctx.JSON(http.StatusOK,
+		gin.H{
+			"success": true,
+			"data": gin.H{
+				"events": events,
+			},
+		})
 }
 
 func getEvent(ctx *gin.Context) {
+	// get id of event from URL with middleware
 	eventId := ctx.GetInt("id_param")
-	event, err := models.GetEvent(eventId)
 
+	// get event from DB
+	event, err := models.GetEvent(eventId)
 	if err != nil {
-		fmt.Println("🫴 error from give event in the getEvent handler:", err)
-		ctx.JSON(http.StatusNotFound, gin.H{"message": "The desired record was not found."})
+		log.Printf("🫴 getEvent() handler function has error when models.GetEvent() call: %v", err)
+		ctx.JSON(http.StatusNotFound, gin.H{"success": false, "message": "The desired record was not found."})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, event)
+	ctx.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data": gin.H{
+			"event": event,
+		},
+	})
 }
 
 func createEvents(ctx *gin.Context) {
-	userId := ctx.GetInt("user_id")
-
 	var event models.Event
-	event.UserId = userId
 
-	err := ctx.ShouldBindJSON(&event)
+	// get user id from token with middleware
+	event.UserId = ctx.GetInt("user_id")
 
-	if err != nil {
-		fmt.Println("🫴 error from read body of request in the createEvents handler:", err)
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "can't pars request's body"})
+	// get data from body of request
+	if err := ctx.ShouldBindJSON(&event); err != nil {
+		log.Printf("🫴 createEvents() handler function has error when read body of request: %v", err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Invalid request body"})
 		return
 	}
 
-	err = event.Save()
-	if err != nil {
-		fmt.Println("🫴 error from event.save() in the createEvents handler:", err)
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "something is wrong"})
+	// save event in DB
+	if err := event.Save(); err != nil {
+		// TODO: use these for create clear error
+		log.Printf("🫴 createEvents() handler function has error when event.Save() call: %v", err)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "something is wrong"})
 		return
 	}
 
 	// ctx.JSON(http.StatusCreated, gin.H{"message": "create new event successful", "event": event})
-	ctx.JSON(http.StatusCreated, gin.H{"message": "create new event successful"})
+	ctx.JSON(http.StatusCreated, gin.H{"success": true, "message": "create new event successful"})
 }
 
 func updateEvent(ctx *gin.Context) {
-	eventId := ctx.GetInt("id_param")
-	eventModel, err := models.GetEvent(eventId)
-
-	if err != nil {
-		fmt.Println("🫴 error from give event in the updateEvent handler:", err)
-		ctx.JSON(http.StatusNotFound, gin.H{"message": "The desired record was not found."})
-		return
-	}
-
-	if eventModel.UserId != ctx.GetInt("user_id") {
-		fmt.Println("🫴 error from check owner of event in the updateEvent handler")
-		ctx.JSON(http.StatusForbidden, gin.H{"message": "you don't access to update this event"})
-		return
-	}
-
 	var event models.Event
-	err = ctx.ShouldBindJSON(&event)
+	// get id of event from URL with middleware
+	event.ID = ctx.GetInt("id_param")
 
-	if err != nil {
-		fmt.Println("🫴 error from read body of request in the updateEvent handler:", err)
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "can't pars request's body"})
-		return
-	}
-	event.ID = eventId
+	// get user id from token with middleware
 	event.UserId = ctx.GetInt("user_id")
-	err = event.Update()
+
+	// get event data from DB
+	eventModel, err := models.GetEvent(event.ID)
 	if err != nil {
-		fmt.Println("🫴 error from event.update() in the updateEvent handler:", err)
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "something is wrong"})
+		log.Printf("🫴 updateEvent() handler function has error when models.GetEvent() call: %v", err)
+		ctx.JSON(http.StatusNotFound, gin.H{"success": false, "message": "The desired record was not found."})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "update event successful"})
+	// check accessibility
+	if eventModel.UserId != event.UserId {
+		log.Println("🫴 updateEvent() handler function has error because of due to a mismatch between the user ID and the event owner")
+		ctx.JSON(http.StatusForbidden, gin.H{"success": false, "message": "You don't access to update this event"})
+		return
+	}
+
+	// get data from body of request
+	if err := ctx.ShouldBindJSON(&event); err != nil {
+		log.Printf("🫴 updateEvent() handler function has error when read body of request: %v", err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Invalid request body."})
+		return
+	}
+
+	// update event in DB
+	if err := event.Update(); err != nil {
+		// TODO: use these for create clear error
+		log.Printf("🫴 updateEvent() handler function has error when event.Update() call: %v", err)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "something is wrong"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"success": true, "message": "Update event successful"})
 }
 
 func deleteEvent(ctx *gin.Context) {
+	// get id of event from URL with middleware
 	eventId := ctx.GetInt("id_param")
+
+	// get event from DB
 	event, err := models.GetEvent(eventId)
-
 	if err != nil {
-		fmt.Println("🫴 error from give event in the deleteEvent handler:", err)
-		ctx.JSON(http.StatusNotFound, gin.H{"message": "The desired record was not found."})
+		log.Printf("🫴 deleteEvent() handler function has error when models.GetEvent() call: %v", err)
+		ctx.JSON(http.StatusNotFound, gin.H{"success": false, "message": "The desired record was not found."})
 		return
 	}
 
+	// check accessibility
 	if event.UserId != ctx.GetInt("user_id") {
-		fmt.Println("🫴 error from check owner of event in the deleteEvent handler")
-		ctx.JSON(http.StatusForbidden, gin.H{"message": "you don't access to update this event"})
+		log.Println("🫴 deleteEvent() handler function has error because of due to a mismatch between the user ID and the event owner")
+		ctx.JSON(http.StatusForbidden, gin.H{"success": false, "message": "You don't access to update this event"})
 		return
 	}
 
-	err = event.Delete()
-	if err != nil {
-		fmt.Println("🫴 error from event.delete() in the deleteEvent handler:", err)
-		ctx.JSON(http.StatusNotFound, gin.H{"message": "Could not delete desired record"})
-		return
+	// delete event from DB
+	if err := event.Delete(); err != nil {
+		log.Printf("🫴 deleteEvent() handler function has error when event.Delete() call: %v", err)
+		ctx.JSON(http.StatusNotFound, gin.H{"success": false, "message": "Could not delete desired record"})
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "delete event successful."})
+	ctx.JSON(http.StatusOK, gin.H{"success": true, "message": "delete event successful."})
 }
