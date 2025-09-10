@@ -2,8 +2,10 @@ package routes
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
+	"sample-url.com/REST-API/constant"
 	"sample-url.com/REST-API/middleware"
 )
 
@@ -25,14 +27,23 @@ func RegisterRoutes(server *gin.Engine) {
 		auth.POST("/events", createEvents)
 		auth.PUT("/events/:id", middleware.URLParameter(), updateEvent)
 		auth.DELETE("/events/:id", middleware.URLParameter(), deleteEvent)
-		auth.POST("/events/:id/register", middleware.URLParameter(), register)
-		auth.DELETE("/events/:id/register", middleware.URLParameter(), unregister)
+		auth.POST("/events/:id/register", middleware.URLParameter(), registerEvent)
+		auth.DELETE("/events/:id/register", middleware.URLParameter(), unregisterEvent)
+		// auth.GET("/users", middleware., getUsers) // TODO: this method return all users
 	}
 
 	server.GET("/events", getEvents)
 	server.GET("/events/:id", middleware.URLParameter(), getEvent)
 
-	// server.GET("/users", getUsers) // TODO: we need high level role (admin) for get all users and change some thing in user data
-	server.POST("/sign-up", createUsers)
-	server.POST("/sign-in", signInUsers)
+	server.POST("/admin/sign-up", func(ctx *gin.Context) {
+		for _, role := range constant.Roles {
+			if strings.ToLower(role.Label) == "admin" {
+				ctx.Set("role_id", role.Value)
+				break
+			}
+		}
+		ctx.Next()
+	}, createUser)
+	server.POST("/sign-up", createUser)
+	server.POST("/sign-in", signInUser)
 }

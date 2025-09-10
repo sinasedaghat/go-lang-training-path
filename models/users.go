@@ -12,6 +12,7 @@ type User struct {
 	ID        int    `json:"id"`
 	Email     string `json:"email" binding:"required,email"`
 	Password  string `json:"password" binding:"required"`
+	RoleId    int    `json:"role_id"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 }
@@ -38,8 +39,8 @@ func (u User) Save() error {
 	// `
 
 	query := `
-		INSERT INTO users(email, password)
-		VALUES (?, ?)
+		INSERT INTO users(email, password, role_id)
+		VALUES (?, ?, ?)
 	`
 
 	statement, err := database.DB.Prepare(query)
@@ -56,7 +57,7 @@ func (u User) Save() error {
 		return err
 	}
 
-	_, err = statement.Exec(u.Email, hashedPassword)
+	_, err = statement.Exec(u.Email, hashedPassword, u.RoleId)
 	// result, err := statement.Exec(u.Email, hashedPassword)
 	if err != nil {
 		fmt.Println("🗂️ Error from Exec(data...) of user.Save method:", err)
@@ -72,7 +73,7 @@ func (u *User) Get() error {
 
 	var password string
 
-	row.Scan(&u.ID, &u.Email, &password, &u.FirstName, &u.LastName)
+	row.Scan(&u.ID, &u.Email, &password, &u.RoleId, &u.FirstName, &u.LastName)
 
 	if !utils.PasswordValidator(password, u.Password) {
 		return errors.New("invalid password")
